@@ -1,2 +1,2 @@
-# mall-admin
-mall 后端管理系统
+# fast-web
+基于vue,element,iview的管理后台模板

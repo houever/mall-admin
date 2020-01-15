@@ -1,9 +1,9 @@
 <template>
   <div>
-      <Button :size="buttonSize" type="primary" @click="addAttrGroup">
-        <Icon type="ios-arrow-back"/>
-        添加属性
-      </Button>
+    <Button :size="buttonSize" type="primary" @click="addAttrGroup">
+      <Icon type="ios-arrow-back"/>
+      添加属性
+    </Button>
     <!--表格数据-->
 
     <Table border :columns="columns" :data="attrGroupList"></Table>
@@ -11,29 +11,36 @@
     <Modal v-model="showAddAttrGroup" width="720">
       <p slot="header" style="color:#2342ff;text-align:center">
         <Icon type="ios-information-circle"></Icon>
-        <span>【{{this.attrGroupName}}】的关联关系</span>
+        <span>【{{this.attrGroupName}}】属性组关联</span>
       </p>
-      <Table highlight-row ref="attrGroupRelation" :columns="attrGroupRelationColumn" :data="attrGroupRelationData"></Table>
+      <Table highlight-row ref="attrGroupRelation" :columns="attrGroupRelationColumn"
+             :data="attrGroupRelationData"></Table>
     </Modal>
 
     <!--添加属性对话框-->
     <Modal v-model="handleAddAttrGroup" width="720">
-      <p slot="header" style="color:#f60;text-align:center">
+      <p slot="header" style="color:#5cb4ff;text-align:center">
         <Icon type="ios-information-circle"></Icon>
         <span>添加属性</span>
       </p>
       <div style="text-align:center">
-        表单
+        <Form :model="attrForm" :label-width="80">
+          <FormItem label="Input">
+            <Input v-model="attrForm.attrName" placeholder="请输入属性名称..."></Input>
+          </FormItem>
+        </Form>
       </div>
       <div slot="footer">
-        <Button type="success" size="large" long :loading="modal_loading" @click="doAddAttrGroup">保存</Button>
-        <Button type="success" size="large" long :loading="modal_loading" @click="cancel">取消</Button>
+        <Button type="success" :loading="modal_loading" @click="doAddAttrGroup">保存</Button>
+        <Button type="primary" :loading="modal_loading" @click="cancel">取消</Button>
       </div>
     </Modal>
   </div>
 </template>
 
 <script>
+  import {attrGroupRelationList, delAttrGroupRelation} from '@/api/pms/product'
+
   export default {
     name: 'attrGroup',
     props: {
@@ -57,13 +64,16 @@
     },
     data() {
       return {
-
-        attrGroupRelationData:[],
-        attrGroupName:'',
+        attrForm: {
+          attrName: ''
+        },
+        attrGroupId: '',
+        attrGroupRelationData: [],
+        attrGroupName: '',
         showAddAttrGroup: false,
         modal_loading: false,
         handleAddAttrGroup: false,
-        buttonSize:'large',
+        buttonSize: 'large',
         columns: [
           {
             title: '属性分组id',
@@ -125,14 +135,14 @@
             }
           }
         ],
-        attrGroupRelationColumn:[
+        attrGroupRelationColumn: [
           {
             title: '属性id',
-            key: 'catName'
+            key: 'attrId'
           },
           {
             title: '属性信息',
-            key: 'catName'
+            key: 'attrName'
           },
           {
             title: '操作',
@@ -151,7 +161,7 @@
                       this.removeAttrGroupRelation(params)
                     }
                   }
-                }, '删除')
+                }, '删除关联')
               ])
             }
           }
@@ -160,29 +170,47 @@
     },
     methods: {
       //点击添加属性
-      addAttrGroup(){
-        this.handleAddAttrGroup=true
+      addAttrGroup() {
+        this.handleAddAttrGroup = true
       },
       //执行添加属性
-      doAddAttrGroup(){
+      doAddAttrGroup() {
 
       },
       //关闭窗口
-      cancel(){
-
+      cancel() {
+        this.handleAddAttrGroup = false
       },
       //维护关联关系
       showAddrGroup(p) {
-        console.log(p)
         this.attrGroupName = p.row.attrGroupName
         this.showAddAttrGroup = true
+        this.attrGroupId = p.row.attrGroupId
+        this.loadAttrGroupRelationData(p)
       },
-      remove(p){
+      loadAttrGroupRelationData() {
+        attrGroupRelationList(this.attrGroupId).then(res => {
+          if (res.success) {
+            this.attrGroupRelationData = res.data
+          }
+        });
+      },
+
+      remove(p) {
 
       },
       //删除关联关系
       removeAttrGroupRelation(p) {
-
+        const param = {
+          'attrId': p.row.attrId,
+          'attrGroupId': this.attrGroupId
+        }
+        delAttrGroupRelation(param).then(res => {
+          if (res.success) {
+            this.$Message.success('解除关联关系成功');
+            this.loadAttrGroupRelationData(this.attrGroupId)
+          }
+        });
       }
     }
   }

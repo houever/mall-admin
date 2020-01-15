@@ -9,33 +9,11 @@ export function catagoryTree() {
 export function attrGroupPage(data) {
   return getRequest(pms + `/pms-attr-group/page/${data}`)
 }
-
-// 获取用户列表数据
-export function getUserListData(data) {
-  return postRequest(pms + '/account/all', data)
+//分组下的属性
+export function attrGroupRelationList(data){
+  return getRequest(pms + `/pms-attr-attrgroup-relation/attrInfo/${data}`)
 }
-
-/* 导出全部数据*/
-export function getAll() {
-  return postRequest(pms + '/account/all')
-}
-
-// 编辑用户
-export function editUser(data) {
-  return postRequest(pms + '/account/edit', data)
-}
-
-// 新增用户
-export function addUser(params) {
-  return postRequest(pms + '/account/add', params)
-}
-
-/* 禁用，启用用户*/
-export function disableUser(param) {
-  return postRequest(pms + '/account/disable', param)
-}
-
-// 删除
-export function delUser(id) {
-  return deleteRequest(pms + '/account/' + id)
+//移除关联关系
+export function delAttrGroupRelation(data){
+  return postRequest(pms + `/pms-attr-attrgroup-relation/remove/relation`,data)
 }

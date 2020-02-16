@@ -17,3 +17,17 @@ export function attrGroupRelationList(data){
 export function delAttrGroupRelation(data){
   return postRequest(pms + `/pms-attr-attrgroup-relation/remove/relation`,data)
 }
+
+//新增属性分组
+export function callAddAttrGroup(data) {
+  return postRequest(pms + `/pms-attr-group/add/`,data)
+}
+//删除属性分组
+export function callDelAttrGroup(data) {
+  return deleteRequest(pms + `/pms-attr-group/del/${data}`)
+}
+
+//新增属性
+export function callAddAttr(data) {
+  return postRequest(pms + `/pms-attr-attrgroup-relation/addAttr/`,data)
+}

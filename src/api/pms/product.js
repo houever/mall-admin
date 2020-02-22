@@ -1,6 +1,8 @@
 import { deleteRequest, getRequest, postRequest } from '../../utils/request'
 import { pms } from '../../config/env'
 
+//**商品分类相关接口
+
 // 分类树菜单
 export function catagoryTree() {
   return getRequest(pms + `/pms-category/tree`)
@@ -30,4 +32,11 @@ export function callDelAttrGroup(data) {
 //新增属性
 export function callAddAttr(data) {
   return postRequest(pms + `/pms-attr-attrgroup-relation/addAttr/`,data)
+}
+
+//**商品相关接口
+
+//商品列表
+export function loadProductList(current,size,data) {
+  return getRequest(pms + `/pms-spu-info/page/${current}/${size}`,data)
 }

@@ -21,5 +21,5 @@ export function searchPermission(data) {
   return getRequest(userApi + '/permission/search', data)
 }
 export function deletePermission(id) {
-  return deleteRequest(userApi + `/permission/del/${id}`)
+  return deleteRequest(userApi + `/permission/delete/${id}`)
 }

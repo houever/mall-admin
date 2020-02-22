@@ -3,6 +3,7 @@ import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
+import { Message } from 'iview'
 import { getRoles } from '@/utils/userinfo'
 import getPageTitle from '@/utils/get-page-title'
 import { setTitle } from '@/utils/util' // 设置浏览器头部标题
@@ -47,6 +48,11 @@ router.beforeEach((to, from, next) => {
         }).catch((err) => {
           store.dispatch('Logout').then(() => {
             Message.error(err || '验证失败，请重新登录')
+            // Message({
+            //   message: err || '验证失败，请重新登录',
+            //   type: 'error',
+            //   duration: 5 * 1000
+            // })
             next({ path: '/' })
           })
         })

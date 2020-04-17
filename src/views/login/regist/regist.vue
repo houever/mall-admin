@@ -19,7 +19,7 @@
 
 <script>
   import registWidget from './registWidget'
-  import { getLoginBg } from '@/api/index'
+  import { getLoginBg } from '@/api/global'
   import { get,put} from '@/utils/cache'
 
   export default {

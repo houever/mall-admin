@@ -54,7 +54,7 @@
   import { isvalidUsernameOrPassword } from '@/utils/validate'
   import { setTimer, touchError } from '@/utils/timer'
   import { chooseElegantSentencesLogin } from '@/utils/chooseElegantSentences'
-  import { serverAttach } from '@/api/index'
+  import { serverAttach } from '@/api/global'
 
   export default {
     name: 'RegistWidget',

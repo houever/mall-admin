@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { loginRequest, postRequest } from '../utils/request'
 
 export function login(username, password) {

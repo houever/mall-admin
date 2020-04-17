@@ -1,4 +1,4 @@
-import { getLoginBg } from '@/api/index'
+import { getLoginBg } from '@/api/global'
 const loginBg = {
   state :{
     bgVideo:'',

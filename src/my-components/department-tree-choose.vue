@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import { initDepts,loadDepts,searchDept } from "@/api/index";
+  import { initDepts,loadDepts,searchDept } from "@/api/global";
   export default {
     name: "departmentTreeChoose",
     props: {

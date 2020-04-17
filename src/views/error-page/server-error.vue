@@ -38,7 +38,7 @@
 
 <script>
   import errGif from '@/assets/401_images/401.gif'
-  import { verifyCaptchaUrl, serverAttach } from '@/api/index'
+  import { verifyCaptchaUrl, serverAttach } from '@/api/global'
   import { sentences404 } from '@/utils/chooseElegantSentences'
   export default {
     name: 'page401',

@@ -74,7 +74,7 @@
   import { isvalidUsernameOrPassword } from '@/utils/validate'
   import { setTimer,stopTimer, touchError } from '@/utils/timer'
   import { chooseElegantSentencesLogin } from '@/utils/chooseElegantSentences'
-  import { verifyCaptchaUrl, serverAttach } from '@/api/index'
+  import { verifyCaptchaUrl, serverAttach } from '@/api/global'
 
   export default {
     name: 'LoginWidget',

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import { initDepts, loadDepts } from "@/api/index";
+  import { initDepts, loadDepts } from "@/api/global";
   export default {
     name: "departmentChoose",
     props: {

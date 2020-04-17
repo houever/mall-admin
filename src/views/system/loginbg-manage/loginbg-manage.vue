@@ -89,7 +89,7 @@
 </template>
 
 <script>
-  import { uploadFileAction } from '@/api/index'
+  import { uploadFileAction } from '@/api/global'
   import { getAllBgList, saveBg, setBg } from '@/api/system/loginbg-manage'
 
   export default {

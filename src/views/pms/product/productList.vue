@@ -109,7 +109,13 @@
           @on-sort-change="changeSort"
           @on-selection-change="showSelect"
           ref="table"
-        ></Table>
+          stripe
+        >
+          <template slot-scope="{ row, index }" slot="action">
+            <Button type="primary" size="small" @click="handleEditProduct(row)">编辑</Button>
+            <Button type="error" size="small" @click="handleDelProduct(row.id)">删除</Button>
+          </template>
+        </Table>
       </Row>
       <Row type="flex" justify="end" class="page">
         <Page
@@ -126,13 +132,26 @@
         ></Page>
       </Row>
     </Card>
+    <add-product :add-product-modal="productModal" @closeAddProductModal="closeAddProductModal"></add-product>
+    <Modal
+      title="查看大图"
+      v-model="productPicModal"
+      footer-hide
+      class-name="vertical-center-modal">
+      <img :src="productPicUrl" v-if="productPicModal" style="width: 100%">
+    </Modal>
   </div>
 </template>
 
 <script>
   import {loadProductList} from '@/api/pms/product'
+  import AddProduct from './addProduct'
 
   export default {
+    components: {AddProduct},
+    comments: {
+      AddProduct
+    },
     props: {},
     data() {
       return {
@@ -142,6 +161,8 @@
         dropDownIcon: 'ios-arrow-down',
         openSearch: true,
         selectCount: 1,
+        productPicModal: false,
+        productPicUrl: '',
         data: [],
         searchForm: {
           productName: '',
@@ -152,7 +173,7 @@
           status: '',
         },
         current: 1,
-        size: 1,
+        size: 10,
         total: 0,
         columns: [
           {
@@ -169,14 +190,184 @@
             title: '序号'
           },
           {
+            title: '品牌',
+            width: 100,
+            align: 'center',
+            key: 'brandName',
+            sortable: true
+          },
+          {
+            title: '商品图片',
+            width: 100,
+            align: 'center',
+            key: 'productPic',
+            render: (h, params) => {
+              const row = params.row
+              return h('div', [
+                  h('img', {
+                    style: {
+                      'margin-top': '10px',
+                      'margin-bottom': '10px',
+                      'border-radius': '4px',
+                      width: '50px',
+                      height: '50px',
+                      cursor: 'pointer'
+                    },
+                    attrs: {
+                      'src': row.productPic,
+                      onerror: row.productPic
+                    },
+                    on: {
+                      click: (e) => {
+                        this.handleProductPictureView(e.srcElement.currentSrc)
+                      }
+                    }
+                  })
+                ]
+              )
+            }
+          },
+          {
             title: '商品名称',
             width: 200,
             align: 'center',
-            key: 'spuName',
+            key: 'productName',
             fixed: 'left',
             sortable: true
           },
+          {
+            title: '商品价格',
+            width: 130,
+            align: 'center',
+            key: 'price',
+            sortable: true
+          },
+          {
+            title: '市场价',
+            width: 100,
+            align: 'center',
+            key: 'originalPrice',
+            sortable: true
+          },
+          {
+            title: '库存',
+            width: 100,
+            align: 'center',
+            key: 'stock',
+            sortable: true
+          },
+          {
+            title: '库存预警值',
+            width: 130,
+            align: 'center',
+            key: 'lowStock',
+            sortable: true
+          },
+          {
+            title: '货号',
+            width: 100,
+            align: 'center',
+            key: 'productSn',
+            sortable: true
+          },
+          {
+            title: '销量',
+            width: 100,
+            align: 'center',
+            key: 'sale',
+            sortable: true
+          },
+          {
+            title: '上架状态',
+            width: 130,
+            align: 'center',
+            key: 'publishStatus',
+            sortable: true,
+            render: (h, params) => {  // 重点
+              return h('div', [
+                h('i-switch', {
+                  props: {
+                    type: 'primary',
+                    size: 'large',
+                    value: params.row.publishStatus,
+                    'true-value': 1,
+                    'false-value': 0,
+                    'true-color':'#13ce66',
+                    'false-color':'#ff4949'
+                  },
+                  scopedSlots: {
+                    open: function () {
+                      return h("span", "上架")
+                    },
+                    close: function () {
+                      return h("span", "下架")
+                    }
+                  },
+                  on: {
+                    'on-change': (value) => {//触发事件是on-change,用双引号括起来，
+                      //参数value是回调值
+                      this.updateProductPublishStatus(params.row.id,value)
+                    }
+                  }
+                }, '')])
+            }
+          },
+          {
+            title: '促销类型',
+            key: 'promotionType',
+            width: 130,
+            align: 'center',
+            render: (h, params) => {
+              const row = params.row
+
+              if (row.promotionType === 0) {
+                return h('Tag', {
+                  props: {
+                    color: 'success'
+                  }
+                }, '原价')
+              } else if(row.promotionType === 1){
+                return h('Tag', {
+                  props: {
+                    color: 'error'
+                  }
+                }, '促销价')
+              }else if(row.promotionType === 2){
+                return h('Tag', {
+                  props: {
+                    color: '#6495ED'
+                  }
+                }, '会员价')
+              }else if(row.promotionType === 3){
+                return h('Tag', {
+                  props: {
+                    color: 'blue'
+                  }
+                }, '阶梯价')
+              }else if(row.promotionType === 4){
+                return h('Tag', {
+                  props: {
+                    color: 'error'
+                  }
+                }, '满减')
+              }else if(row.promotionType === 5){
+                return h('Tag', {
+                  props: {
+                    color: 'error'
+                  }
+                }, '限时购')
+              }
+            }
+          },
+          {
+            title: '操作',
+            slot: 'action',
+            width: 200,
+            align: 'center',
+            fixed: 'right'
+          }
         ],
+        productModal: false,
       }
     },
     methods: {
@@ -184,7 +375,7 @@
         this.productList()
       },
       productList() {
-        loadProductList(this.current,this.size,this.searchForm).then(res => {
+        loadProductList(this.current, this.size, this.searchForm).then(res => {
           this.loading = false
           this.data = res.data.records
         })
@@ -217,7 +408,10 @@
       },
       //点击添加商品
       handleAddProduct() {
-
+        this.productModal = true
+      },
+      closeAddProductModal() {
+        this.productModal = false
       },
       delAll() {
 
@@ -237,6 +431,23 @@
       },
       showSelect() {
 
+      },
+      //预览商品图片
+      handleProductPictureView(url) {
+        this.productPicModal = true
+        this.productPicUrl = url
+      },
+      //修改商品上架状态
+      updateProductPublishStatus(id,status) {
+        //todo 修改商品上下架状态
+        console.log(id)
+        console.log(status)
+      },
+      handleEditProduct(row){
+        console.log("点击编辑按钮======>"+row)
+      },
+      handleDelProduct(id){
+        console.log("点击删除按钮======>"+id)
       }
     },
     mounted() {

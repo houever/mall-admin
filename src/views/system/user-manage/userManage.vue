@@ -181,7 +181,7 @@
 
 <script>
   import expandRow from './userExpand.vue'
-  import { uploadFileAction } from '@/api/index'
+  import { uploadFileAction } from '@/api/global'
   import {
     getUserListPage,
     addUser,

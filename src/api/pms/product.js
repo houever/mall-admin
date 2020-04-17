@@ -38,5 +38,5 @@ export function callAddAttr(data) {
 
 //商品列表
 export function loadProductList(current,size,data) {
-  return getRequest(pms + `/pms-spu-info/page/${current}/${size}`,data)
+  return getRequest(pms + `/pms-product/page/${current}/${size}`,data)
 }

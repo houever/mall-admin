@@ -19,7 +19,7 @@
 
 <script>
   import loginWidget from './loginWidget'
-  import { getLoginBg } from '@/api/index'
+  import { getLoginBg } from '@/api/global'
   import { get,put} from '@/utils/cache'
 
   export default {
